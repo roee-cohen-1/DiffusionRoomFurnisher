@@ -2,3 +2,4 @@
 venv/
 *.jpeg
 model_state_dict.pth
+ta
