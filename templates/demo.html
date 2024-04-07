@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
+            integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/22.0.1/esm/jcanvas.min.js"-->
+    <!--            integrity="sha512-EPmc2s5PNAVIJr32sJ9Q6IauRrvSDXl4JWGmoWByWOloGXo1Ua0VRsn3OaFkmipgdfCnMX2dlPmV1p51Xbf5cw=="-->
+    <!--            crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+<div class="editor">
+    <div class="col">
+        <div class="header">
+            <h3>
+                Room Editor
+            </h3>
+            <span class="tooltip t400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path
+                        d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <div>
+                    <p>
+                        Below you can start drawing your layout.
+                        If you want to use the AI tool, a room layout and a door will be sufficient.
+                        As we need to add different furniture items, each one got its own color!
+                        You can see the list of the items and their colors on the left.
+                        Choose an item to draw it!
+                        </br>
+                        Click and drag to draw rectangles that represent the bounding boxes of the items.
+                        </br>
+                        Here are some examples:
+                    </p>
+                    </br>
+                    <div>
+                        <div>
+                            <img src="../static/room_1.png" width="128" height="128"/>
+                            <p>Unfurnished room</p>
+                        </div>
+                        <div>
+                            <img src="../static/room_2.png" width="128" height="128"/>
+                            <p>Fully furnished room</p>
+                        </div>
+                    </div>
+                    </br>
+                    <p>
+                        <b>Made a mistake?</b> Click on the Undo button or just use <code>Ctrl+Z</code>.</br>
+                        You can also clear the canvas by click the Clear button.
+                        </br>
+                        Want to keep editing an existing image? Just upload it.</br>
+                        Want to save your design? You can download it.</br>
+                        <b>Be sure to check out our AI tool!</b>
+                    </p>
+                </div>
+            </span>
+        </div>
+        <p>Upload an image or start drawing!</br>You can also draw on uploaded images.</p>
+        <div class="buttons">
+            <div class="icon-button" id="upload">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-upload">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" x2="12" y1="3" y2="15"/>
+                </svg>
+                <span>Upload Image</span>
+            </div>
+            <div class="icon-button" id="undo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-undo">
+                    <path d="M3 7v6h6"/>
+                    <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                </svg>
+                <span>Undo</span>
+            </div>
+            <div class="icon-button" id="clear">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-rotate-ccw">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                </svg>
+                <span>Clear</span>
+            </div>
+            <div class="icon-button" id="download-sketch">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-download">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                <span>Download</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="side">
+                <div class="color highlight" color="#696969FF">
+                    <div class="sample" style="background: rgb(105, 105, 105)"></div>
+                    <p>Room Layout</p>
+                </div>
+                <div class="color" color="#7FFFD4FF">
+                    <div class="sample" style="background: rgb(127, 255, 212)"></div>
+                    <p>Door</p>
+                </div>
+                <div class="color" color="#B03060FF">
+                    <div class="sample" style="background: rgb(176, 48, 96)"></div>
+                    <p>Toilet</p>
+                </div>
+                <div class="color" color="#FF0000FF">
+                    <div class="sample" style="background: rgb(255, 0, 0)"></div>
+                    <p>Sink</p>
+                </div>
+                <div class="color" color="#6495EDFF">
+                    <div class="sample" style="background: rgb(100, 149, 237)"></div>
+                    <p>Shower</p>
+                </div>
+                <div class="color" color="#FFB6C1FF">
+                    <div class="sample" style="background: rgb(255, 182, 193)"></div>
+                    <p>Window</p>
+                </div>
+                <div class="color" color="#DA70D6FF">
+                    <div class="sample" style="background: rgb(218, 112, 214)"></div>
+                    <p>Closet</p>
+                </div>
+                <div class="color" color="#B0E0E6FF">
+                    <div class="sample" style="background: rgb(176, 224, 230)"></div>
+                    <p>Washing Machine</p>
+                </div>
+                <div class="color" color="#CCCCFFFF">
+                    <div class="sample" style="background: rgb(204, 204, 255)"></div>
+                    <p>Sliding Door</p>
+                </div>
+                <div class="color" color="#FFFFFFFF">
+                    <div class="sample" style="background: rgb(255, 255, 255)"></div>
+                    <p>Erase</p>
+                </div>
+            </div>
+            <canvas id="drawing-canvas" width="384" height="384"></canvas>
+        </div>
+    </div>
+</div>
+<div class="viewer">
+    <div class="col">
+        <div class="header">
+            <h3>
+                AI Advisor
+            </h3>
+            <span class="tooltip t200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path
+                        d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <div>
+                    <p>
+                        Below you can send your layout to our AI tool for further improvements.</br>
+                        Just click on one of the sparkles buttons!</br>
+                        <b>Don't worry</b> - nothing will happen to your drawn design.</br></br>
+                        Once the layout is ready, you will see in the frame below.</br></br>
+                        You can download the result, same as in the Editor Tab.</br></br>
+                        If you want to edit/fix the results of the AI, you can move the generated layout to the Editor Tab.</br>
+                        <b>Keep in mind</b> - moving to editor will delete the layout drawn on the editor canvas.
+                    </p>
+
+                </div>
+            </span>
+        </div>
+        <p>Our AI can help you plan your layout.</br>Just click the sparkles button after drawing.</p>
+        <div class="buttons">
+            <div class="icon-button" id="move-to-editor">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-arrow-big-left">
+                    <path d="M18 15h-6v4l-7-7 7-7v4h6v6z"/>
+                </svg>
+                <span>Move To Editor</span>
+            </div>
+            <div class="icon-button" id="run">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-sparkles">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                    <path d="M5 3v4"/>
+                    <path d="M19 17v4"/>
+                    <path d="M3 5h4"/>
+                    <path d="M17 19h4"/>
+                </svg>
+                <span>Generate Layout</span>
+            </div>
+            <div class="icon-button" id="download-final">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-download">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                <span>Download</span>
+            </div>
+        </div>
+        <div class="display">
+            <div class="generate show">
+                <img src="../static/magic.png" width="64" height="64"/>
+                <p style="margin-top: 8px">Generate Layout</p>
+            </div>
+            <div class="loader-wrapper hide">
+                <div class="loader"></div>
+                <p style="margin-top: 8px">Takes about a minute...</p>
+            </div>
+            <canvas class="hide" id="final-canvas" width="384" height="384"></canvas>
+        </div>
+    </div>
+</div>
+<script src="../static/script.js" type="text/javascript"></script>
+</body>
+</html>
