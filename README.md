@@ -1,6 +1,8 @@
 # Diffusion Room Furnisher
 > Intelligent Interactive Systems (096235) - Technion
 
+[Explanation & Demo video](https://technionmail-my.sharepoint.com/:f:/g/personal/roeecohen_campus_technion_ac_il/Ekwyofs2QVJGp73kkh-4dGMBYl5pvctBH2m3AKkbHzeDlg?e=D9HToH)
+
 ## Installation
 1. Clone the project.
 2. Download ```model_state_dict.pth``` from the following [link](https://technionmail-my.sharepoint.com/:f:/g/personal/roeecohen_campus_technion_ac_il/Ekwyofs2QVJGp73kkh-4dGMBYl5pvctBH2m3AKkbHzeDlg?e=D9HToH).
